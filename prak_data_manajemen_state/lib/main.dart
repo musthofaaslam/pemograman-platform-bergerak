@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'mahasiswa.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  await Hive.openBox('mahasiswaBox');
+  Hive.registerAdapter(MahasiswaAdapter());
+  await Hive.openBox<Mahasiswa>('mahasiswaBox');
 
   runApp(MyApp());
 }
@@ -25,26 +27,26 @@ class MahasiswaPage extends StatefulWidget {
   _MahasiswaPageState createState() => _MahasiswaPageState();
 }
 
-class _MahasiswaPageState extends State {
-  final box = Hive.box('mahasiswaBox');
+class _MahasiswaPageState extends State<MahasiswaPage> {
+  final Box<Mahasiswa> box = Hive.box<Mahasiswa>('mahasiswaBox');
 
   final namaController = TextEditingController();
   final nimController = TextEditingController();
   final prodiController = TextEditingController();
 
-  int? editIndex; // null = tambah, ada nilai = edit
+  int? editIndex;
 
   void saveData() {
-    final data = {
-      'nama': namaController.text,
-      'nim': nimController.text,
-      'prodi': prodiController.text,
-    };
+    final mahasiswa = Mahasiswa(
+      nama: namaController.text,
+      nim: nimController.text,
+      prodi: prodiController.text,
+    );
 
     if (editIndex == null) {
-      box.add(data);
+      box.add(mahasiswa);
     } else {
-      box.putAt(editIndex!, data);
+      box.putAt(editIndex!, mahasiswa);
       editIndex = null;
     }
 
@@ -52,11 +54,11 @@ class _MahasiswaPageState extends State {
   }
 
   void editData(int index) {
-    final data = box.getAt(index);
+    final data = box.getAt(index)!;
 
-    namaController.text = data['nama'];
-    nimController.text = data['nim'];
-    prodiController.text = data['prodi'];
+    namaController.text = data.nama;
+    nimController.text = data.nim;
+    prodiController.text = data.prodi;
 
     setState(() {
       editIndex = index;
@@ -85,7 +87,6 @@ class _MahasiswaPageState extends State {
         padding: EdgeInsets.all(12),
         child: Column(
           children: [
-            // FORM INPUT
             TextField(
               controller: namaController,
               decoration: InputDecoration(labelText: "Nama"),
@@ -109,17 +110,19 @@ class _MahasiswaPageState extends State {
                 ),
                 SizedBox(width: 10),
                 if (editIndex != null)
-                  ElevatedButton(onPressed: clearForm, child: Text("Batal")),
+                  ElevatedButton(
+                    onPressed: clearForm,
+                    child: Text("Batal"),
+                  ),
               ],
             ),
 
             SizedBox(height: 20),
 
-            // LIST DATA
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: box.listenable(),
-                builder: (context, Box box, _) {
+                builder: (context, Box<Mahasiswa> box, _) {
                   if (box.isEmpty) {
                     return Center(child: Text("Belum ada data"));
                   }
@@ -127,13 +130,13 @@ class _MahasiswaPageState extends State {
                   return ListView.builder(
                     itemCount: box.length,
                     itemBuilder: (context, index) {
-                      final data = box.getAt(index);
+                      final data = box.getAt(index)!;
 
                       return Card(
                         child: ListTile(
-                          title: Text(data['nama']),
+                          title: Text(data.nama),
                           subtitle: Text(
-                            "NIM: ${data['nim']} | ${data['prodi']}",
+                            "NIM: ${data.nim} | ${data.prodi}",
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -161,5 +164,3 @@ class _MahasiswaPageState extends State {
     );
   }
 }
-
-

@@ -11,7 +11,7 @@ class Mahasiswa extends HiveObject {
   final String nim;
 
   @HiveField(2)
-  final String prodi;
+  final String prodiId;
 
-  Mahasiswa({required this.nama, required this.nim, required this.prodi});
+  Mahasiswa({required this.nama, required this.nim, required this.prodiId});
 }

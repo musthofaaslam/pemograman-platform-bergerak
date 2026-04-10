@@ -1,38 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'mahasiswa.dart';
+part of 'prodi.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MahasiswaAdapter extends TypeAdapter<Mahasiswa> {
+class ProdiAdapter extends TypeAdapter<Prodi> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  Mahasiswa read(BinaryReader reader) {
+  Prodi read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Mahasiswa(
-      nama: fields[0] as String,
-      nim: fields[1] as String,
-      prodiId: fields[2] as String,
+    return Prodi(
+      namaProdi: fields[0] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Mahasiswa obj) {
+  void write(BinaryWriter writer, Prodi obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.nama)
       ..writeByte(1)
-      ..write(obj.nim)
-      ..writeByte(2)
-      ..write(obj.prodiId);
+      ..writeByte(0)
+      ..write(obj.namaProdi);
   }
 
   @override
@@ -41,7 +35,7 @@ class MahasiswaAdapter extends TypeAdapter<Mahasiswa> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MahasiswaAdapter &&
+      other is ProdiAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
